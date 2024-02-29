@@ -29,10 +29,10 @@ def images_to_pdf(image_folder, output_pdf):
 
 if __name__ == "__main__":
     # 指定包含图片的文件夹路径
-    image_folder_path = "002/image"
+    image_folder_path = "jpg_to_pdf/image"
 
     # 指定输出PDF的文件夹路径
-    output_pdf_path = "002/output"
+    output_pdf_path = "jpg_to_pdf/output"
 
     # 创建输出文件夹（如果不存在）
     os.makedirs(output_pdf_path, exist_ok=True)
