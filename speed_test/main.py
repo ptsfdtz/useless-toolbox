@@ -19,8 +19,8 @@ def run_speed_test():
     upload_speed = int(test.upload() / 1024 / 1024)
 
     # 更新界面显示
-    download_label.config(text="Download Speed:" + str(download_speed) + " Mbits")
-    upload_label.config(text="Upload Speed:" + str(upload_speed) + " Mbits")
+    download_label.config(text="下载速度:" + str(download_speed) + " Mbits")
+    upload_label.config(text="上传速度:" + str(upload_speed) + " Mbits")
 
 # 创建主窗口
 window = tk.Tk()
@@ -30,7 +30,7 @@ window.title("Speed Test GUI")
 window.geometry("400x200")  # You can change the width and height as needed
 
 # 添加标签和按钮
-status_label = Label(window, text="Click Start")
+status_label = Label(window, text="点击开始")
 download_label = Label(window, text="")
 upload_label = Label(window, text="")
 test_button = Button(window, text="运行速度测试", command=run_speed_test)
