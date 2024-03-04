@@ -26,8 +26,8 @@ def images_to_pdf(image_folder, output_pdf):
     c.save()
 
 def main():
-    image_folder_path = "jpg_to_pdf/images"
-    output_pdf_path = "jpg_to_pdf/output"
+    image_folder_path = "images"
+    output_pdf_path = "output"
 
     os.makedirs(output_pdf_path, exist_ok=True)
     images_to_pdf(image_folder_path, output_pdf_path)

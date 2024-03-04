@@ -4,10 +4,5 @@
 
 ## description
 
-- jpg to PDF
-
-将 jpg，JPG 和 png 格式的图片转换为一个 PDF 文件，方便储存和传输。
-
-- internet speedtest
-
-一个有 UI 界面的网速测试脚本
+发行版本:[下载]()
+源码:[下载](https://github.com/ptsfdtz/python-script/archive/refs/tags/0.0.1.zip)
