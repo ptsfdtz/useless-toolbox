@@ -1,6 +1,7 @@
 from PIL import Image
 from reportlab.pdfgen import canvas
 import os
+import tkinter as tk
 
 def images_to_pdf(image_folder, output_pdf):
     images = [img for img in os.listdir(image_folder) if img.endswith(".png") or img.endswith(".jpg") or img.endswith(".JPG")]
@@ -39,5 +40,15 @@ def main():
 
     images_to_pdf(image_folder_path, output_pdf_path)
 
+    window = tk.Tk()
+    window.title("jpg to pdf")  
+
+    window.geometry("150x50")  
+    window.configure(bg="white")
+    # window.resizable(False, False)
+    label = tk.Label(window, text="PDF转换完成", font=("Arial", 16))
+    label.pack()
+    window.mainloop()
+    
 if __name__ == "__main__":
     main()

@@ -3,6 +3,8 @@ import tkinter as tk
 from tkinter import Label, Button
 
 def run_speed_test():
+    status_label.config(text="正在测试ing...")
+    window.update()
 
     status_label.config(text="正在测试ing...")
     
@@ -18,8 +20,10 @@ def run_speed_test():
     download_label.config(text="下载速度:" + str(download_speed) + " Mbits")
     upload_label.config(text="上传速度:" + str(upload_speed) + " Mbits")
 
+    status_label.config(text="测试完成")
+    window.update()
 window = tk.Tk()
-window.title("Speed Test GUI")
+window.title("Speed Test")
 
 window.geometry("400x200")  
 
