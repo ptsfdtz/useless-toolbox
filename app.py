@@ -17,8 +17,12 @@ class ToolBox:
         label.pack(pady=20)
 
         for idx, module_info in enumerate(self.modules, start=1):
-            button = Button(self.window, text=f"{idx}. {module_info['name']}", command=lambda mod=module_info: mod['function'](), font=("Helvetica", 14))
+            button = Button(self.window, text=f"{idx}. {module_info['name']}", command=lambda mod=module_info: self.run_module(mod), font=("Helvetica", 14))
             button.pack(pady=10)
+
+    def run_module(self, module_info):
+        self.window.destroy()  # Close the main window
+        module_info['function']()
 
     def run(self):
         self.window.mainloop()
@@ -32,11 +36,3 @@ if __name__ == '__main__':
 
     toolbox = ToolBox("欢迎来到秃子的工具箱", modules)
     toolbox.run()
-
-# select = int(input("请选择你要执行的功能：\n1.JPG转PDF\n2.网速测试\n"))
-# if select == 1:
-#     jpgToPdf.main()
-#     print("JPG转PDF已执行")
-# elif select == 2:
-#     speedTest.main()
-#     print("网速测试已执行")
