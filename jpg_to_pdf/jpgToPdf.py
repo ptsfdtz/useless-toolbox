@@ -23,7 +23,6 @@ def images_to_pdf(image_folder, output_pdf):
 
         if i != len(images) - 1:
             c.showPage()
-
     c.save()
 
 def main():
