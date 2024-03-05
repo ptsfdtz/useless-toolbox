@@ -8,8 +8,7 @@ class ToolBox:
         self.window = tk.Tk()
         self.window.title(title)
         self.window.geometry("800x400")
-        self.window.configure(bg='gray')  # Set background color to gray
-
+        self.window.configure(bg='gray')  
         self.modules = modules
         self.create_ui()
 
@@ -17,7 +16,7 @@ class ToolBox:
         label = Label(self.window, text="请选择一个执行:", font=("Helvetica", 16), bg='gray')  # Set label background color
         label.pack(pady=20)
 
-        frame = tk.Frame(self.window, bg='gray')  # Create a frame to contain the buttons
+        frame = tk.Frame(self.window, bg='gray')  
         frame.pack()
 
         for idx, module_info in enumerate(self.modules, start=1):
