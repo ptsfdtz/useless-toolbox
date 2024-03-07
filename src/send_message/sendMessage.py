@@ -2,6 +2,9 @@ import smtplib
 from getpass import getpass
 from email.message import EmailMessage
 import pandas as pd
+import tkinter as tk
+from tkinter import ttk
+from threading import Thread
 
 def get_smtp_settings(email_address):
     domain = email_address.split('@')[1].lower()
@@ -15,7 +18,7 @@ def get_smtp_settings(email_address):
     else:
         raise ValueError(f"不支持的电子邮件域名: {domain}")
 
-def send_email(email_address, email_password, filename, recipient_name, recipient_email):
+def send_email(email_address, email_password, filename, recipient_name, recipient_email, progress_var):
     smtp_host, smtp_port = get_smtp_settings(email_address)
     smtp = smtplib.SMTP_SSL(smtp_host, smtp_port)
 
@@ -35,6 +38,13 @@ def send_email(email_address, email_password, filename, recipient_name, recipien
 
     smtp.login(email_address, email_password)
     smtp.send_message(msg)
+
+    # 模拟发送过程中的进度
+    for i in range(100):
+        progress_var.set(i)
+        root.update_idletasks()
+        root.after(50)  # 小延迟，以模拟真实进度情况
+
     smtp.quit()
 
 def read_message_data():
@@ -44,14 +54,52 @@ def read_message_data():
     return result_dict
 
 def main():
-    EMAIL_ADDRESS = input('请输入您的电子邮件地址: ')
-    EMAIL_PASSWORD = getpass('请输入您的电子邮件密码: ')
+    def on_send_button_click():
+        email_address = email_entry.get()
+        email_password = password_entry.get()
+        recipient_data = read_message_data()
 
-    recipient_data = read_message_data()
+        progress_var.set(0)  # 重置进度条
 
-    for recipient_name, recipient_email in recipient_data.items():
-        filename = r"src\send_message\test.txt"
-        send_email(EMAIL_ADDRESS, EMAIL_PASSWORD, filename, recipient_name, recipient_email)
+        # 启动新线程进行邮件发送，以避免阻塞主界面
+        send_thread = Thread(target=send_emails, args=(email_address, email_password, recipient_data))
+        send_thread.start()
+
+    def send_emails(email_address, email_password, recipient_data):
+        for i, (recipient_name, recipient_email) in enumerate(recipient_data.items(), 1):
+            filename = r"src\send_message\test.txt"
+            send_email(email_address, email_password, filename, recipient_name, recipient_email, progress_var)
+
+        # 所有邮件发送完成后，更新进度条为100
+        progress_var.set(100)
+
+    root = tk.Tk()
+    root.title("邮件发送器")
+
+    style = ttk.Style()
+    style.theme_use("clam")
+
+    font_style = ('Helvetica', 14)
+
+    email_label = ttk.Label(root, text="邮箱:", font=font_style)
+    email_label.grid(row=0, column=0, padx=10, pady=10, sticky=tk.W)
+    email_entry = ttk.Entry(root, font=font_style)
+    email_entry.grid(row=0, column=1, padx=10, pady=10, sticky=tk.W)
+
+    password_label = ttk.Label(root, text="密码:", font=font_style)
+    password_label.grid(row=1, column=0, padx=10, pady=10, sticky=tk.W)
+    password_entry = ttk.Entry(root, show="*", font=font_style)
+    password_entry.grid(row=1, column=1, padx=10, pady=10, sticky=tk.W)
+
+    send_button = ttk.Button(root, text="发送邮件", command=on_send_button_click, style="TButton")
+    send_button.grid(row=2, column=0, columnspan=2, pady=20)
+
+    # 添加发送进度条
+    progress_var = tk.DoubleVar()
+    progress_bar = ttk.Progressbar(root, variable=progress_var, mode='determinate', length=200)
+    progress_bar.grid(row=3, column=0, columnspan=2, pady=10)
+
+    root.mainloop()
 
 if __name__ == '__main__':
     main()
