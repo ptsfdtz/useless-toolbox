@@ -10,7 +10,7 @@ class ImageToPDFConverter:
     def __init__(self, master):
         self.master = master
         master.title("Image to PDF Converter")
-        self.master.geometry("400x200")
+        self.master.geometry("400x250")
         
         self.folder_path = tk.StringVar()
         self.message_var = tk.StringVar()

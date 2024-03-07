@@ -2,7 +2,7 @@ import pandas as pd
 import random
 from collections import Counter
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, filedialog, messagebox
 
 class DrawingApp:
     def __init__(self, master):
@@ -10,20 +10,29 @@ class DrawingApp:
         self.master.title("抽签程序")
         self.master.geometry("400x250")
         self.master.configure(bg='#f0f0f0')
-        #添加一个背景图
-        # self.master.background()
 
-        self.label = ttk.Label(master, text="点击按钮进行抽签", font=("Arial", 18))
-        self.label.pack(pady=20)
+        self.label = ttk.Label(master, text="点击按钮选择文件", font=("Arial", 18))
+        self.label.pack(pady=10)
 
         style = ttk.Style()
         style.configure('TButton', font=('Arial', 14))
 
-        self.button = ttk.Button(master, text="抽签", command=self.draw)
-        self.button.pack()
+        self.choose_file_button = ttk.Button(master, text="选择文件", command=self.choose_file)
+        self.choose_file_button.pack(pady=10)
 
-    def drawing(self):
-        data = pd.read_excel('index.xlsx')
+        self.draw_button = ttk.Button(master, text="抽签", state=tk.DISABLED, command=self.draw)
+        self.draw_button.pack()
+
+        self.selected_file = None
+
+    def choose_file(self):
+        self.selected_file = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+        if self.selected_file:
+            self.label.config(text=f"已选择文件：{self.selected_file}")
+            self.draw_button.config(state=tk.NORMAL)
+
+    def drawing(self, file_path):
+        data = pd.read_excel(file_path)
 
         output_dict = {}
 
@@ -34,10 +43,16 @@ class DrawingApp:
         return output_dict
 
     def draw(self):
-        iterations = 1 
-        result_dict = self.drawing()
+        if not self.selected_file:
+            messagebox.showwarning("警告", "请选择一个有效的Excel文件。")
+            return
 
-        selected_list = [random.choice(list(result_dict.values())) for _ in range(iterations)]
+        iterations = 1 
+        result_dict = {}
+        
+        result_dict[self.selected_file] = self.drawing(self.selected_file)
+
+        selected_list = [random.choice(list(result_dict[self.selected_file].values())) for _ in range(iterations)]
 
         most_common_person, _ = Counter(selected_list).most_common(1)[0]
 
