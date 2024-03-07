@@ -13,17 +13,17 @@ def get_smtp_settings(email_address):
     elif domain == 'qq.com':
         return 'smtp.qq.com', 465
     else:
-        raise ValueError(f"Unsupported email domain: {domain}")
+        raise ValueError(f"不支持的电子邮件域名: {domain}")
 
-def send_email(email_address, email_password, filename, recipient_name):
+def send_email(email_address, email_password, filename, recipient_name, recipient_email):
     smtp_host, smtp_port = get_smtp_settings(email_address)
     smtp = smtplib.SMTP_SSL(smtp_host, smtp_port)
 
-    subject = "Python email subject"
+    subject = "Python邮件主题"
     msg = EmailMessage()
     msg['Subject'] = subject
     msg['From'] = email_address
-    msg['To'] = to_email_address
+    msg['To'] = recipient_email
 
     with open(filename, 'r', encoding='utf-8') as f:
         file_content = f.read()
@@ -44,14 +44,14 @@ def read_message_data():
     return result_dict
 
 def main():
-    EMAIL_ADDRESS = input('Enter your email address: ')
-    EMAIL_PASSWORD = getpass('Enter your email password: ')
+    EMAIL_ADDRESS = input('请输入您的电子邮件地址: ')
+    EMAIL_PASSWORD = getpass('请输入您的电子邮件密码: ')
 
     recipient_data = read_message_data()
 
     for recipient_name, recipient_email in recipient_data.items():
         filename = r"src\send_message\test.txt"
-        send_email(EMAIL_ADDRESS, EMAIL_PASSWORD, filename, recipient_name)
+        send_email(EMAIL_ADDRESS, EMAIL_PASSWORD, filename, recipient_name, recipient_email)
 
 if __name__ == '__main__':
     main()
