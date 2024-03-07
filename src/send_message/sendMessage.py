@@ -1,7 +1,7 @@
 import smtplib
 from getpass import getpass
 from email.message import EmailMessage
-import readMessage
+import pandas as pd
 
 def get_smtp_settings(email_address):
     domain = email_address.split('@')[1].lower()
@@ -23,7 +23,7 @@ def send_email(email_address, email_password, filename, recipient_name):
     msg = EmailMessage()
     msg['Subject'] = subject
     msg['From'] = email_address
-    msg['To'] = email_address
+    msg['To'] = to_email_address
 
     with open(filename, 'r', encoding='utf-8') as f:
         file_content = f.read()
@@ -37,11 +37,17 @@ def send_email(email_address, email_password, filename, recipient_name):
     smtp.send_message(msg)
     smtp.quit()
 
+def read_message_data():
+    file_path = 'src/send_message/index.xlsx'
+    data = pd.read_excel(file_path)
+    result_dict = data.set_index('姓名')['邮箱'].to_dict()
+    return result_dict
+
 def main():
     EMAIL_ADDRESS = input('Enter your email address: ')
     EMAIL_PASSWORD = getpass('Enter your email password: ')
-    
-    recipient_data = readMessage.main()
+
+    recipient_data = read_message_data()
 
     for recipient_name, recipient_email in recipient_data.items():
         filename = r"src\send_message\test.txt"
