@@ -39,11 +39,8 @@ def send_email(email_address, email_password, filename, recipient_name, recipien
     smtp.login(email_address, email_password)
     smtp.send_message(msg)
 
-    # 模拟发送过程中的进度
     for i in range(100):
         progress_var.set(i)
-        root.update_idletasks()
-        root.after(50)  # 小延迟，以模拟真实进度情况
 
     smtp.quit()
 
@@ -59,9 +56,8 @@ def main():
         email_password = password_entry.get()
         recipient_data = read_message_data()
 
-        progress_var.set(0)  # 重置进度条
+        progress_var.set(0)
 
-        # 启动新线程进行邮件发送，以避免阻塞主界面
         send_thread = Thread(target=send_emails, args=(email_address, email_password, recipient_data))
         send_thread.start()
 
@@ -70,7 +66,6 @@ def main():
             filename = r"src\send_message\test.txt"
             send_email(email_address, email_password, filename, recipient_name, recipient_email, progress_var)
 
-        # 所有邮件发送完成后，更新进度条为100
         progress_var.set(100)
 
     root = tk.Tk()
@@ -94,7 +89,6 @@ def main():
     send_button = ttk.Button(root, text="发送邮件", command=on_send_button_click, style="TButton")
     send_button.grid(row=2, column=0, columnspan=2, pady=20)
 
-    # 添加发送进度条
     progress_var = tk.DoubleVar()
     progress_bar = ttk.Progressbar(root, variable=progress_var, mode='determinate', length=200)
     progress_bar.grid(row=3, column=0, columnspan=2, pady=10)
