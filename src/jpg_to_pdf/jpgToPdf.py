@@ -10,29 +10,41 @@ class ImageToPDFConverter:
     def __init__(self, master):
         self.master = master
         master.title("Image to PDF Converter")
-        self.master.geometry("400x250")
-        
+        self.master.geometry("420x260")
+
+        self.create_widgets()
+
+    def create_widgets(self):
         self.folder_path = tk.StringVar()
         self.message_var = tk.StringVar()
         self.progress_var = tk.DoubleVar()
+        self.pdf_path_var = tk.StringVar()
 
-        self.label = tk.Label(master, text="选择图片文件夹:")
-        self.label.pack(padx=20)
+        style = ttk.Style()
+        style.configure("TButton", padding=6, relief="flat", background="#ccc")
+        style.configure("TEntry", padding=6, relief="flat", background="#eee")
+        style.configure("TLabel", background="#fff")
 
-        self.entry = tk.Entry(master, textvariable=self.folder_path,width=40)
-        self.entry.pack(padx=20)
+        self.label = tk.Label(self.master, text="选择图片文件夹:")
+        self.label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky=tk.W)
 
-        self.browse_button = tk.Button(master, text="浏览", command=self.browse,width=15)
-        self.browse_button.pack(padx=20)
+        self.entry = ttk.Entry(self.master, textvariable=self.folder_path, width=30, style="TEntry")
+        self.entry.grid(row=1, column=0, padx=20, pady=5, sticky=tk.W)
 
-        self.convert_button = tk.Button(master, text="一键转换", command=self.convert_to_pdf,width=15)
-        self.convert_button.pack(padx=20)
+        self.browse_button = ttk.Button(self.master, text="浏览", command=self.browse, style="TButton")
+        self.browse_button.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
 
-        self.progress_bar = ttk.Progressbar(master, variable=self.progress_var, orient=tk.HORIZONTAL, length=200, mode='determinate')
-        self.progress_bar.pack(pady=10)
+        self.convert_button = ttk.Button(self.master, text="一键转换", command=self.convert_to_pdf, width=15, style="TButton")
+        self.convert_button.grid(row=2, column=0, padx=20, pady=10, sticky=tk.W)
 
-        self.message_label = tk.Label(master, textvariable=self.message_var)
-        self.message_label.pack()
+        self.progress_bar = ttk.Progressbar(self.master, variable=self.progress_var, orient=tk.HORIZONTAL, length=380, mode='determinate')
+        self.progress_bar.grid(row=3, column=0, columnspan=2, pady=10, padx=20, sticky=tk.W)
+
+        self.pdf_path_label = ttk.Label(self.master, textvariable=self.pdf_path_var, wraplength=380, justify=tk.LEFT, style="TLabel", foreground="blue")
+        self.pdf_path_label.grid(row=4, column=0, columnspan=2, pady=(0, 20), padx=20, sticky=tk.W)
+
+        self.message_label = ttk.Label(self.master, textvariable=self.message_var, style="TLabel", foreground="red")
+        self.message_label.grid(row=5, column=0, columnspan=2, pady=(0, 10), padx=20, sticky=tk.W)
 
     def browse(self):
         folder_selected = filedialog.askdirectory(title="选择文件夹")
@@ -79,16 +91,18 @@ class ImageToPDFConverter:
 
         c.save()
 
-        message = f"Conversion completed. PDF saved in the 'output' folder.\nPath: {os.path.abspath(pdf_path)}"
+        message = f"Conversion completed. PDF saved in the 'output' folder."
+        self.pdf_path_var.set(f"PDF Path: {os.path.abspath(pdf_path)}")
         self.show_message(message)
 
     def show_message(self, message):
         self.message_var.set(message)
-        self.master.update_idletasks()  
-        self.master.after(2000, self.clear_message)  
+        self.master.update_idletasks()
+        self.master.after(2000, self.clear_message)
 
     def clear_message(self):
-        self.message_var.set("")  
+        self.message_var.set("")
+        self.pdf_path_var.set("")
 
 def main():
     root = tk.Tk()
