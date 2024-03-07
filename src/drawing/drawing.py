@@ -1,52 +1,79 @@
-import smtplib
-from getpass import getpass
-from email.message import EmailMessage
 import pandas as pd
+import random
+from collections import Counter
+import tkinter as tk
+from tkinter import ttk, filedialog, messagebox
 
-def get_smtp_settings(email_address):
-    domain = email_address.split('@')[1].lower()
+class DrawingApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("抽签程序")
+        self.master.geometry("400x250")
+        self.master.configure(bg='#f0f0f0')
 
-    if domain == '163.com':
-        return 'smtp.163.com', 465
-    elif domain == 'gmail.com':
-        return 'smtp.gmail.com', 465
-    elif domain == 'qq.com':
-        return 'smtp.qq.com', 465
-    else:
-        raise ValueError(f"Unsupported email domain: {domain}")
+        self.label = ttk.Label(master, text="点击按钮选择文件", font=("Arial", 18))
+        self.label.pack(pady=10)
 
-def send_email(sender_email, sender_password, recipient_email, filename, recipient_name):
-    smtp_host, smtp_port = get_smtp_settings(sender_email)
-    smtp = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        style = ttk.Style()
+        style.configure('TButton', font=('Arial', 14))
 
-    subject = "Python邮件主题"
-    msg = EmailMessage()
-    msg['Subject'] = subject
-    msg['From'] = sender_email
-    msg['To'] = recipient_email
+        self.choose_file_button = ttk.Button(master, text="选择文件", command=self.choose_file)
+        self.choose_file_button.pack(pady=10)
 
-    with open(filename, 'r', encoding='utf-8') as f:
-        file_content = f.read()
+        self.draw_button = ttk.Button(master, text="抽签", state=tk.DISABLED, command=self.draw)
+        self.draw_button.pack()
 
-    modified_content = f"{recipient_name}, {file_content}"
+        self.selected_file = None
 
-    msg.set_content(modified_content)
+    def choose_file(self):
+        self.selected_file = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+        if self.selected_file:
+            self.label.config(text=f"已选择文件：{self.selected_file}")
+            self.draw_button.config(state=tk.NORMAL)
 
-    smtp.login(sender_email, sender_password)
-    smtp.send_message(msg)
-    smtp.quit()
+    def drawing(self, file_path):
+        data = pd.read_excel(file_path)
+
+        output_dict = {}
+
+        for index, row in data.iterrows():
+            name = row['姓名']
+            output_dict[str(index)] = name
+    
+        return output_dict
+
+    def draw(self):
+        if not self.selected_file:
+            messagebox.showwarning("警告", "请选择一个有效的Excel文件。")
+            return
+
+        iterations = 1 
+        result_dict = {}
+        
+        result_dict[self.selected_file] = self.drawing(self.selected_file)
+
+        selected_list = [random.choice(list(result_dict[self.selected_file].values())) for _ in range(iterations)]
+
+        most_common_person, _ = Counter(selected_list).most_common(1)[0]
+
+        message = f"恭喜你 {most_common_person} 被抽中了！"
+        self.label.config(text=message)
+
+        self.label.after(2000, self.fade_out)
+
+        messagebox.showinfo("恭喜", message)
+
+    def fade_out(self):
+        current_color = self.label.cget("foreground")
+        new_color = self.master.winfo_rgb(current_color)
+        new_color = "#{:02x}{:02x}{:02x}".format(*new_color)
+
+        self.label.config(foreground=new_color)
 
 def main():
-    sender_email = input('请输入你的邮箱地址: ')
-    sender_password = getpass('请输入你的邮箱密码: ')
+    root = tk.Tk()
+    app = DrawingApp(root)
+    root.mainloop()
 
-    file_path = 'src/send_message/index.xlsx'
-    data = pd.read_excel(file_path)
-    recipient_data = data.set_index('姓名')[['邮箱']].to_dict()['邮箱']
-
-    for recipient_name, recipient_email in recipient_data.items():
-        filename = r"src\send_message\test.txt"
-        send_email(sender_email, sender_password, recipient_email, filename, recipient_name)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
