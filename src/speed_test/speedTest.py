@@ -7,7 +7,7 @@ class SpeedTestApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Speed Test")
-        self.master.geometry("300x250")
+        self.master.geometry("400x250")
 
         self.create_widgets()
 

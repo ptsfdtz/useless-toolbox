@@ -8,8 +8,10 @@ class DrawingApp:
     def __init__(self, master):
         self.master = master
         self.master.title("抽签程序")
-        self.master.geometry("400x200")
+        self.master.geometry("400x250")
         self.master.configure(bg='#f0f0f0')
+        #添加一个背景图
+        # self.master.background()
 
         self.label = ttk.Label(master, text="点击按钮进行抽签", font=("Arial", 18))
         self.label.pack(pady=20)

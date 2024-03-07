@@ -10,7 +10,7 @@ class ImageToPDFConverter:
     def __init__(self, master):
         self.master = master
         master.title("Image to PDF Converter")
-        self.master.geometry("400x250")
+        self.master.geometry("400x200")
         
         self.folder_path = tk.StringVar()
         self.message_var = tk.StringVar()
@@ -25,7 +25,7 @@ class ImageToPDFConverter:
         self.browse_button = tk.Button(master, text="浏览", command=self.browse,width=15)
         self.browse_button.pack(padx=20)
 
-        self.convert_button = tk.Button(master, text="转换为PDF", command=self.convert_to_pdf,width=15)
+        self.convert_button = tk.Button(master, text="一键转换", command=self.convert_to_pdf,width=15)
         self.convert_button.pack(padx=20)
 
         self.progress_bar = ttk.Progressbar(master, variable=self.progress_var, orient=tk.HORIZONTAL, length=200, mode='determinate')
