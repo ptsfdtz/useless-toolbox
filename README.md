@@ -4,7 +4,7 @@
 
 ## download
 
-发行版本:[下载](https://github.com/ptsfdtz/useful-toolbox/releases/download/0.0.4/Toolbox-0.0.4-X86_64-pc-windows.zip)
+发行版本:[下载](https://github.com/ptsfdtz/useful-toolbox/releases/download/0.1.0/Toolbox-0.1.0-x86_64-pc-windows.zip)
 源码:[下载](https://github.com/ptsfdtz/useful-toolbox/archive/refs/tags/0.0.4.zip)
 
 ## description
