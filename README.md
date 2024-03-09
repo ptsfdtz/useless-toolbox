@@ -25,13 +25,13 @@
 git clone https://github.com/ptsfdtz/useful-toolbox.git
 ```
 
-在文件夹中打开终端，安装`requirements`库。
+在文件夹中打开终端，安装 `requirements`库。
 
 ```sh
 pip install -r requirements.txt
 ```
 
-使用只需要运行`app.py`文件。
+使用只需要运行 `app.py`文件。
 
 ## usage
 
@@ -43,7 +43,6 @@ pip install -r requirements.txt
 
 2. 网络测速
    ![1709771717467](image/README/1709771717467.png)
-
 3. 随机抽奖
 
 ![1709772046310](image/README/1709772046310.png)
@@ -52,12 +51,12 @@ pip install -r requirements.txt
 
 ![1709772269447](image/README/1709772269447.png)
 
-列的第一行需要是`姓名`。
+列的第一行需要是 `姓名`。
 
 4.批量发送邮件
 
 ![1709874425999](image/README/1709874425999.png)
 
-将需要发送的邮箱 excel 表`index.xlsx`放在根目录中。
+将需要发送的邮箱 excel 表 `index.xlsx`放在根目录中。
 
-列的第一行需要是`邮箱`。
+列的第一行需要是 `邮箱`。

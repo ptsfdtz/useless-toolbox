@@ -4,7 +4,7 @@ from jpg_to_pdf import jpgToPdf
 from speed_test import speedTest
 from drawing import drawing
 from send_message import sendMessage
-
+from sign_in import signIn
 class Module:
     def __init__(self, name, function, *args, **kwargs):
         self.name = name
@@ -68,7 +68,8 @@ if __name__ == '__main__':
         Module("图片转PDF", jpgToPdf.main),
         Module("网速测试", speedTest.main),
         Module("随机抽签", drawing.main),
-        Module("发送邮件", sendMessage.main),  # No () after sendMessage.main
+        Module("发送邮件", sendMessage.main),
+        Module("签到", signIn.main),
         # Add more modules in the future
     ]
 

@@ -1,113 +1,133 @@
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QFileDialog, QProgressBar
+from PyQt5.QtCore import Qt, pyqtSlot, QThread, pyqtSignal, QTimer, QCoreApplication
+from PyQt5.QtGui import QPixmap
 from PIL import Image
 from reportlab.pdfgen import canvas
 import os
-import tkinter as tk
-from tkinter import filedialog
-from tkinter import ttk
-from threading import Thread
 
-class ImageToPDFConverter:
-    def __init__(self, master):
-        self.master = master
-        master.title("Image to PDF Converter")
-        self.master.geometry("420x260")
+class ImageToPDFConverter(QWidget):
+    def __init__(self):
+        super().__init__()
 
-        self.create_widgets()
+        self.folder_path = QLineEdit()
+        self.message_label = QLabel()
+        self.progress_bar = QProgressBar()
+        self.pdf_path_label = QLabel()
 
-    def create_widgets(self):
-        self.folder_path = tk.StringVar()
-        self.message_var = tk.StringVar()
-        self.progress_var = tk.DoubleVar()
-        self.pdf_path_var = tk.StringVar()
+        self.worker = None  # Initialize worker instance
 
-        style = ttk.Style()
-        style.configure("TButton", padding=6, relief="flat", background="#ccc")
-        style.configure("TEntry", padding=6, relief="flat", background="#eee")
-        style.configure("TLabel", background="#fff")
+        self.init_ui()
 
-        self.label = tk.Label(self.master, text="选择图片文件夹:")
-        self.label.grid(row=0, column=0, padx=20, pady=(20, 0), sticky=tk.W)
+    def init_ui(self):
+        layout = QVBoxLayout()
 
-        self.entry = ttk.Entry(self.master, textvariable=self.folder_path, width=30, style="TEntry")
-        self.entry.grid(row=1, column=0, padx=20, pady=5, sticky=tk.W)
+        layout.addWidget(QLabel("选择图片文件夹:"))
+        layout.addWidget(self.folder_path)
 
-        self.browse_button = ttk.Button(self.master, text="浏览", command=self.browse, style="TButton")
-        self.browse_button.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W)
+        browse_button = QPushButton("浏览", clicked=self.browse)
+        layout.addWidget(browse_button)
 
-        self.convert_button = ttk.Button(self.master, text="一键转换", command=self.convert_to_pdf, width=15, style="TButton")
-        self.convert_button.grid(row=2, column=0, padx=20, pady=10, sticky=tk.W)
+        convert_button = QPushButton("一键转换", clicked=self.convert_to_pdf)
+        layout.addWidget(convert_button)
 
-        self.progress_bar = ttk.Progressbar(self.master, variable=self.progress_var, orient=tk.HORIZONTAL, length=380, mode='determinate')
-        self.progress_bar.grid(row=3, column=0, columnspan=2, pady=10, padx=20, sticky=tk.W)
+        layout.addWidget(self.progress_bar)
+        layout.addWidget(self.pdf_path_label)
+        layout.addWidget(self.message_label)
 
-        self.pdf_path_label = ttk.Label(self.master, textvariable=self.pdf_path_var, wraplength=380, justify=tk.LEFT, style="TLabel", foreground="blue")
-        self.pdf_path_label.grid(row=4, column=0, columnspan=2, pady=(0, 20), padx=20, sticky=tk.W)
+        self.setLayout(layout)
+        self.setWindowTitle("Image to PDF Converter")
+        self.setGeometry(100, 100, 420, 260)
 
-        self.message_label = ttk.Label(self.master, textvariable=self.message_var, style="TLabel", foreground="red")
-        self.message_label.grid(row=5, column=0, columnspan=2, pady=(0, 10), padx=20, sticky=tk.W)
-
+    @pyqtSlot()
     def browse(self):
-        folder_selected = filedialog.askdirectory(title="选择文件夹")
-        self.folder_path.set(folder_selected)
+        folder_selected = QFileDialog.getExistingDirectory(self, "选择文件夹")
+        self.folder_path.setText(folder_selected)
 
+    @pyqtSlot()
     def convert_to_pdf(self):
-        folder_path = self.folder_path.get()
+        folder_path = self.folder_path.text()
 
         if not folder_path:
-            self.show_message("No folder selected. Exiting.")
+            self.show_message("未选择文件夹。退出。")
             return
 
         output_pdf_path = "output"
         os.makedirs(output_pdf_path, exist_ok=True)
 
-        Thread(target=self.images_to_pdf, args=(folder_path, output_pdf_path)).start()
+        self.worker = ImageToPDFWorker(folder_path, output_pdf_path)
+        self.worker.finished.connect(self.show_conversion_result)
+        self.worker.update_progress.connect(self.update_progress_bar)
+        self.worker.start()
 
-    def images_to_pdf(self, image_folder, output_pdf):
-        images = [img for img in os.listdir(image_folder) if img.lower().endswith((".png", ".jpg"))]
-
-        if not images:
-            self.show_message("No images found in the selected folder.")
-            return
-
-        images.sort()
-
-        pdf_path = os.path.join(output_pdf, "output.pdf")
-        c = canvas.Canvas(pdf_path)
-
-        total_images = len(images)
-        for i, image in enumerate(images):
-            img_path = os.path.join(image_folder, image)
-            img = Image.open(img_path)
-            width, height = img.size
-            c.setPageSize((width, height))
-            c.drawInlineImage(img_path, 0, 0, width, height)
-
-            if i != len(images) - 1:
-                c.showPage()
-
-            progress_value = (i + 1) / total_images * 100
-            self.progress_var.set(progress_value)
-            self.master.update()
-
-        c.save()
-
-        message = f"Conversion completed. PDF saved in the 'output' folder."
-        self.pdf_path_var.set(f"PDF Path: {os.path.abspath(pdf_path)}")
-        self.show_message(message)
-
+    @pyqtSlot(str)
     def show_message(self, message):
-        self.message_var.set(message)
-        self.master.update_idletasks()
-        self.master.after(2000, self.clear_message)
+        self.message_label.setStyleSheet("")  # Reset to default
+        self.message_label.setText(message)
+        self.message_label.repaint()
 
-    def clear_message(self):
-        self.message_var.set("")
-        self.pdf_path_var.set("")
+    @pyqtSlot(str)
+    def show_conversion_result(self, result):
+        if result.startswith("Error: "):
+            self.show_message(result)
+        else:
+            self.pdf_path_label.setText(f"PDF Path: {os.path.abspath(result)}")
+            self.progress_bar.setValue(100)
+            self.show_message("Conversion completed.")
+        self.worker.deleteLater()
+
+    @pyqtSlot(int)
+    def update_progress_bar(self, value):
+        self.progress_bar.setValue(value)
+        QCoreApplication.processEvents()  # Allow the GUI to update
+
+class ImageToPDFWorker(QThread):
+    finished = pyqtSignal(str)
+    update_progress = pyqtSignal(int)
+
+    def __init__(self, image_folder, output_pdf):
+        super().__init__()
+        self.image_folder = image_folder
+        self.output_pdf = output_pdf
+
+    def run(self):
+        try:
+            images = [img for img in os.listdir(self.image_folder) if img.lower().endswith((".png", ".jpg"))]
+
+            if not images:
+                raise ValueError("No images found in the selected folder.")
+
+            images.sort()
+
+            pdf_path = os.path.join(self.output_pdf, "output.pdf")
+            c = canvas.Canvas(pdf_path)
+
+            total_images = len(images)
+            for i, image in enumerate(images):
+                img_path = os.path.join(self.image_folder, image)
+                img = Image.open(img_path)
+                width, height = img.size
+                c.setPageSize((width, height))
+                c.drawInlineImage(img_path, 0, 0, width, height)
+
+                if i != len(images) - 1:
+                    c.showPage()
+
+                progress_value = (i + 1) / total_images * 100
+                self.update_progress.emit(int(progress_value))
+
+            c.save()
+
+            self.finished.emit(pdf_path)
+
+        except Exception as e:
+            error_message = f"Error: {str(e)}"
+            self.finished.emit(error_message)
 
 def main():
-    root = tk.Tk()
-    app = ImageToPDFConverter(root)
-    root.mainloop()
+    app = QApplication([])
+    window = ImageToPDFConverter()
+    window.show()
+    app.exec_()
 
 if __name__ == "__main__":
     main()
