@@ -3,7 +3,6 @@ import random
 from collections import Counter
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-
 class DrawingApp:
     def __init__(self, master):
         self.master = master
