@@ -13,21 +13,21 @@ class Module:
         self.kwargs = kwargs
 
 class ToolBoxUI:
-    def __init__(self, window, modules):
-        self.window = window
+    def __init__(self, root, modules):
+        self.root = root
         self.modules = modules
         self.create_ui()
 
     def create_ui(self):
-        self.window.configure(bg='#f0f0f0')  # Set background color
+        self.root.configure(bg='#f0f0f0')  # Set background color
 
-        canvas = tk.Canvas(self.window, width=800, height=400, bg='#f0f0f0')
+        canvas = tk.Canvas(self.root, width=400, height=400, bg='#f0f0f0')
         canvas.pack()
 
-        title_label = ttk.Label(self.window, text="选择你需要使用的工具", font=("Helvetica", 20, "bold"), background='#f0f0f0')
+        title_label = ttk.Label(self.root, text="选择你需要使用的工具", font=("Helvetica", 20, "bold"), background='#f0f0f0')
         title_label.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
 
-        frame = tk.Frame(self.window, bg='#f0f0f0')  
+        frame = tk.Frame(self.root, bg='#f0f0f0')  
         frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
         self.create_buttons(frame)
@@ -48,32 +48,31 @@ class ToolBoxUI:
 
     def run_module(self, module_info):
         try:
-            self.window.destroy()
             module_info.function(*module_info.args, **module_info.kwargs)
         except Exception as e:
             print(f"Error running module {module_info.name}: {e}")
 
 class ToolBox:
     def __init__(self, title, modules):
-        self.window = tk.Tk()
-        self.window.title(title)
-        self.window.geometry("800x400")
+        self.root = tk.Tk()
+        self.root.title(title)
+        self.root.geometry("800x400")
 
         # Get screen width and height
-        screen_width = self.window.winfo_screenwidth()
-        screen_height = self.window.winfo_screenheight()
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
 
         # Calculate the position to center the window
         x_position = int((screen_width - 800) / 2)
         y_position = int((screen_height - 400) / 2)
 
         # Set the window position
-        self.window.geometry(f"800x400+{x_position}+{y_position}")
+        self.root.geometry(f"800x400+{x_position}+{y_position}")
 
-        self.ui = ToolBoxUI(self.window, modules)
+        self.ui = ToolBoxUI(self.root, modules)
 
     def run(self):
-        self.window.mainloop()
+        self.root.mainloop()
 
 if __name__ == '__main__':
     modules = [

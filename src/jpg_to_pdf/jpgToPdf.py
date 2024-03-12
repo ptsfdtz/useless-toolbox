@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QFileDialog, QProgressBar
-from PyQt5.QtCore import Qt, pyqtSlot, QThread, pyqtSignal, QTimer, QCoreApplication
+from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal, QCoreApplication
+from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtGui import QPixmap
 from PIL import Image
 from reportlab.pdfgen import canvas
 import os
-import app
 
-class ImageToPDFConverter(QWidget): 
+class ImageToPDFConverter(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -15,7 +15,7 @@ class ImageToPDFConverter(QWidget):
         self.progress_bar = QProgressBar()
         self.pdf_path_label = QLabel()
 
-        self.worker = None  # Initialize worker instance
+        self.worker = None
 
         self.init_ui()
 
@@ -35,12 +35,16 @@ class ImageToPDFConverter(QWidget):
         layout.addWidget(self.pdf_path_label)
         layout.addWidget(self.message_label)
 
-        # return_button = QPushButton("返回", clicked=self.return_to_original)
-        # layout.addWidget(return_button)
-
         self.setLayout(layout)
         self.setWindowTitle("Image to PDF Converter")
-        self.setGeometry(100, 100, 520, 260) # 设置窗口大小
+        self.resize(800, 400)  # Set dimensions to 800x400
+        self.center_on_screen()  # Center the window on the screen
+
+    def center_on_screen(self):
+        frame_geometry = self.frameGeometry()
+        screen_center = QDesktopWidget().availableGeometry().center()
+        frame_geometry.moveCenter(screen_center)
+        self.move(frame_geometry.topLeft())
 
     @pyqtSlot()
     def browse(self):
@@ -65,7 +69,7 @@ class ImageToPDFConverter(QWidget):
 
     @pyqtSlot(str)
     def show_message(self, message):
-        self.message_label.setStyleSheet("")  # Reset to default
+        self.message_label.setStyleSheet("") 
         self.message_label.setText(message)
         self.message_label.repaint()
 
@@ -82,14 +86,7 @@ class ImageToPDFConverter(QWidget):
     @pyqtSlot(int)
     def update_progress_bar(self, value):
         self.progress_bar.setValue(value)
-        QCoreApplication.processEvents()  # Allow the GUI to update
-
-    # @pyqtSlot()
-    # def return_to_original(self):
-    #     # 在这里执行返回时的操作
-    #     self.close()
-    #     # 返回原来的界面
-    #     app.main()
+        QCoreApplication.processEvents() 
 
 class ImageToPDFWorker(QThread):
     finished = pyqtSignal(str)
