@@ -1,34 +1,46 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QFileDialog, QMessageBox
+from PyQt5.QtCore import QTimer
 import pandas as pd
 import random
 from collections import Counter
-import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
-class DrawingApp:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("抽签程序")
-        self.master.geometry("400x250")
-        self.master.configure(bg='#f0f0f0')
 
-        self.label = ttk.Label(master, text="点击按钮选择文件", font=("Arial", 18))
-        self.label.pack(pady=10)
+class DrawingApp(QWidget):
+    def __init__(self):
+        super().__init__()
 
-        style = ttk.Style()
-        style.configure('TButton', font=('Arial', 14))
+        self.setWindowTitle("抽签程序")
+        self.setGeometry(100, 100, 400, 250)
+        self.setStyleSheet("background-color: #f0f0f0;")
 
-        self.choose_file_button = ttk.Button(master, text="选择文件", command=self.choose_file)
-        self.choose_file_button.pack(pady=10)
+        self.label = QLabel("点击按钮选择文件", self)
+        self.label.setGeometry(20, 20, 360, 40)
+        # self.label.setFont("Arial", 18)
 
-        self.draw_button = ttk.Button(master, text="抽签", state=tk.DISABLED, command=self.draw)
-        self.draw_button.pack()
+        self.choose_file_button = QPushButton("选择文件", self)
+        self.choose_file_button.setGeometry(20, 80, 360, 40)
+        self.choose_file_button.setFont("Arial", 14)
+        self.choose_file_button.clicked.connect(self.choose_file)
+
+        self.draw_button = QPushButton("抽签", self)
+        self.draw_button.setGeometry(20, 140, 360, 40)
+        self.draw_button.setFont("Arial", 14)
+        self.draw_button.setEnabled(False)
+        self.draw_button.clicked.connect(self.draw)
 
         self.selected_file = None
 
     def choose_file(self):
-        self.selected_file = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
-        if self.selected_file:
-            self.label.config(text=f"已选择文件：{self.selected_file}")
-            self.draw_button.config(state=tk.NORMAL)
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file_dialog = QFileDialog()
+        file_dialog.setNameFilter("Excel files (*.xlsx)")
+        file_dialog.setOptions(options)
+
+        if file_dialog.exec_() == QFileDialog.Accepted:
+            self.selected_file = file_dialog.selectedFiles()[0]
+            self.label.setText(f"已选择文件：{self.selected_file}")
+            self.draw_button.setEnabled(True)
 
     def drawing(self, file_path):
         data = pd.read_excel(file_path)
@@ -43,7 +55,7 @@ class DrawingApp:
 
     def draw(self):
         if not self.selected_file:
-            messagebox.showwarning("警告", "请选择一个有效的Excel文件。")
+            QMessageBox.warning(self, "警告", "请选择一个有效的Excel文件。")
             return
 
         iterations = 1 
@@ -56,23 +68,22 @@ class DrawingApp:
         most_common_person, _ = Counter(selected_list).most_common(1)[0]
 
         message = f"恭喜你 {most_common_person} 被抽中了！"
-        self.label.config(text=message)
+        self.label.setText(message)
 
-        self.label.after(2000, self.fade_out)
-
-        messagebox.showinfo("恭喜", message)
+        QTimer.singleShot(2000, self.fade_out)
+        QMessageBox.information(self, "恭喜", message)
 
     def fade_out(self):
-        current_color = self.label.cget("foreground")
-        new_color = self.master.winfo_rgb(current_color)
-        new_color = "#{:02x}{:02x}{:02x}".format(*new_color)
+        current_color = self.label.palette().color(self.label.foregroundRole()).name()
+        new_color = self.palette().color(self.backgroundRole()).name()
 
-        self.label.config(foreground=new_color)
+        self.label.setStyleSheet(f"color: {new_color};")
 
 def main():
-    root = tk.Tk()
-    app = DrawingApp(root)
-    root.mainloop()
+    app = QApplication(sys.argv)
+    window = DrawingApp()
+    window.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

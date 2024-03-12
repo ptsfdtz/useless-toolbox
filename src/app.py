@@ -5,6 +5,8 @@ from speed_test import speedTest
 from drawing import drawing
 from send_message import sendMessage
 from sign_in import signIn
+import logging
+
 class Module:
     def __init__(self, name, function, *args, **kwargs):
         self.name = name
@@ -48,10 +50,13 @@ class ToolBoxUI:
 
     def run_module(self, module_info):
         try:
-            self.window.destroy()
+            self.window.withdraw()  # 隐藏主窗口
             module_info.function(*module_info.args, **module_info.kwargs)
         except Exception as e:
-            print(f"Error running module {module_info.name}: {e}")
+            logging.exception(f"Error running module {module_info.name}: {e}")
+        finally:
+            self.window.deiconify()  # 重新显示主窗口
+
 
 class ToolBox:
     def __init__(self, title, modules):
@@ -63,7 +68,7 @@ class ToolBox:
     def run(self):
         self.window.mainloop()
 
-if __name__ == '__main__':
+def main():
     modules = [
         Module("图片转PDF", jpgToPdf.main),
         Module("网速测试", speedTest.main),
@@ -75,3 +80,6 @@ if __name__ == '__main__':
 
     toolbox = ToolBox("欢迎来到秃子的工具箱", modules)
     toolbox.run()
+
+if __name__ == '__main__':
+    main()

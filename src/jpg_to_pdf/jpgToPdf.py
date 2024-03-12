@@ -4,8 +4,8 @@ from PyQt5.QtGui import QPixmap
 from PIL import Image
 from reportlab.pdfgen import canvas
 import os
-
-class ImageToPDFConverter(QWidget):
+import app
+class ImageToPDFConverter(QWidget): 
     def __init__(self):
         super().__init__()
 
@@ -34,9 +34,13 @@ class ImageToPDFConverter(QWidget):
         layout.addWidget(self.pdf_path_label)
         layout.addWidget(self.message_label)
 
+        # return_button = QPushButton("返回", clicked=self.return_to_original)
+        # layout.addWidget(return_button)
+
+
         self.setLayout(layout)
         self.setWindowTitle("Image to PDF Converter")
-        self.setGeometry(100, 100, 420, 260)
+        self.setGeometry(100, 100, 520, 260) # 设置窗口大小
 
     @pyqtSlot()
     def browse(self):
@@ -79,6 +83,13 @@ class ImageToPDFConverter(QWidget):
     def update_progress_bar(self, value):
         self.progress_bar.setValue(value)
         QCoreApplication.processEvents()  # Allow the GUI to update
+
+    # @pyqtSlot()
+    # def return_to_original(self):
+    #     # 在这里执行返回时的操作
+    #     self.close()
+    #     # 返回原来的界面
+    #     app.main()
 
 class ImageToPDFWorker(QThread):
     finished = pyqtSignal(str)
