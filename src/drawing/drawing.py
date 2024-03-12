@@ -19,12 +19,12 @@ class DrawingApp(QWidget):
 
         self.choose_file_button = QPushButton("选择文件", self)
         self.choose_file_button.setGeometry(20, 80, 360, 40)
-        self.choose_file_button.setFont("Arial", 14)
+        # self.choose_file_button.setFont("Arial", 14)
         self.choose_file_button.clicked.connect(self.choose_file)
 
         self.draw_button = QPushButton("抽签", self)
         self.draw_button.setGeometry(20, 140, 360, 40)
-        self.draw_button.setFont("Arial", 14)
+        # self.draw_button.setFont("Arial", 14)
         self.draw_button.setEnabled(False)
         self.draw_button.clicked.connect(self.draw)
 

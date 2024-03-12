@@ -5,6 +5,7 @@ from PIL import Image
 from reportlab.pdfgen import canvas
 import os
 import app
+
 class ImageToPDFConverter(QWidget): 
     def __init__(self):
         super().__init__()
@@ -36,7 +37,6 @@ class ImageToPDFConverter(QWidget):
 
         # return_button = QPushButton("返回", clicked=self.return_to_original)
         # layout.addWidget(return_button)
-
 
         self.setLayout(layout)
         self.setWindowTitle("Image to PDF Converter")
