@@ -35,9 +35,6 @@ class ImageToPDFConverter(QWidget):
         layout.addWidget(self.pdf_path_label)
         layout.addWidget(self.message_label)
 
-        # return_button = QPushButton("返回", clicked=self.return_to_original)
-        # layout.addWidget(return_button)
-
         self.setLayout(layout)
         self.setWindowTitle("Image to PDF Converter")
         self.setGeometry(100, 100, 520, 260) # 设置窗口大小

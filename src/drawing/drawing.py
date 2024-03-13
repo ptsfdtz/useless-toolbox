@@ -1,34 +1,40 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QFileDialog, QMessageBox
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
 import pandas as pd
 import random
 from collections import Counter
 
 class DrawingApp(QWidget):
-    def __init__(self):
+    def __init__(self, app):
         super().__init__()
 
+        self.app = app  # Store the reference to the QApplication instance
+
         self.setWindowTitle("抽签程序")
-        self.setGeometry(100, 100, 400, 250)
+        self.setGeometry(0, 0, 800, 400)  # Set dimensions to 800x400
+        self.center_on_screen()  # Center the window on the screen
         self.setStyleSheet("background-color: #f0f0f0;")
 
         self.label = QLabel("点击按钮选择文件", self)
-        self.label.setGeometry(20, 20, 360, 40)
-        # self.label.setFont("Arial", 18)
+        self.label.setGeometry(20, 20, 760, 40)
 
         self.choose_file_button = QPushButton("选择文件", self)
-        self.choose_file_button.setGeometry(20, 80, 360, 40)
-        # self.choose_file_button.setFont("Arial", 14)
+        self.choose_file_button.setGeometry(20, 80, 760, 40)
         self.choose_file_button.clicked.connect(self.choose_file)
 
         self.draw_button = QPushButton("抽签", self)
-        self.draw_button.setGeometry(20, 140, 360, 40)
-        # self.draw_button.setFont("Arial", 14)
+        self.draw_button.setGeometry(20, 140, 760, 40)
         self.draw_button.setEnabled(False)
         self.draw_button.clicked.connect(self.draw)
 
         self.selected_file = None
+
+    def center_on_screen(self):
+        screen_geometry = self.app.desktop().availableGeometry()
+        x_position = (screen_geometry.width() - self.width()) // 2
+        y_position = (screen_geometry.height() - self.height()) // 2
+        self.move(x_position, y_position)
 
     def choose_file(self):
         options = QFileDialog.Options()
@@ -81,7 +87,7 @@ class DrawingApp(QWidget):
 
 def main():
     app = QApplication(sys.argv)
-    window = DrawingApp()
+    window = DrawingApp(app)  # Pass the QApplication instance to DrawingApp
     window.show()
     sys.exit(app.exec_())
 

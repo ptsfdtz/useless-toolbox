@@ -1,11 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QProgressBar, QFileDialog
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QProgressBar, QFileDialog, QHBoxLayout, QDesktopWidget
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from threading import Thread
 from email.message import EmailMessage
 import smtplib
-import pandas as pd
+import openpyxl
 from PyQt5.QtWidgets import QDesktopWidget
 
 
@@ -17,16 +17,25 @@ class EmailSenderApp(QWidget):
 
     def init_ui(self):
         self.setWindowTitle("邮件发送器")
-        self.resize(500, 300)
-
+        self.setGeometry(0, 0, 800, 400)  
+        self.center_on_screen()  
+        self.setStyleSheet("background-color: #f0f0f0;")
+        
         font_style = ('Helvetica', 14)
         font = QFont(*font_style)
+
+        email_layout = QHBoxLayout()
 
         self.email_label = QLabel("邮箱:", self)
         self.email_label.setFont(font)
 
         self.email_entry = QLineEdit(self)
         self.email_entry.setFont(font)
+
+        email_layout.addWidget(self.email_label)
+        email_layout.addWidget(self.email_entry)
+
+        password_layout = QHBoxLayout()
 
         self.password_label = QLabel("密码:", self)
         self.password_label.setFont(font)
@@ -35,11 +44,8 @@ class EmailSenderApp(QWidget):
         self.password_entry.setEchoMode(QLineEdit.Password)
         self.password_entry.setFont(font)
 
-        self.file_label = QLabel("选择名单文件:", self)
-        self.file_label.setFont(font)
-
-        self.file_entry = QLineEdit(self)
-        self.file_entry.setFont(font)
+        password_layout.addWidget(self.password_label)
+        password_layout.addWidget(self.password_entry)
 
         self.file_button = QPushButton("选择名单文件", self)
         self.file_button.clicked.connect(self.on_file_button_click)
@@ -53,13 +59,13 @@ class EmailSenderApp(QWidget):
         self.progress_bar.setFixedHeight(30) 
         self.progress_bar.setAlignment(Qt.AlignCenter) 
 
+        # Added this line to define self.file_entry
+        self.file_entry = QLineEdit(self)
+        self.file_entry.setFont(font)
+
         layout = QVBoxLayout(self)
-        layout.addWidget(self.email_label)
-        layout.addWidget(self.email_entry)
-        layout.addWidget(self.password_label)
-        layout.addWidget(self.password_entry)
-        layout.addWidget(self.file_label)
-        layout.addWidget(self.file_entry)
+        layout.addLayout(email_layout)
+        layout.addLayout(password_layout)
         layout.addWidget(self.file_button)
         layout.addWidget(self.send_button)
         layout.addWidget(self.progress_bar)
@@ -134,8 +140,9 @@ class EmailSenderApp(QWidget):
 
     def read_recipient_list(self, file_path):
         try:
-            data = pd.read_excel(file_path)
-            result_dict = data.set_index('姓名')['邮箱'].to_dict()
+            workbook = openpyxl.load_workbook(file_path)
+            sheet = workbook.active
+            result_dict = {row[0].value: row[1].value for row in sheet.iter_rows(min_row=2, max_col=2, values_only=True)}
             return result_dict
         except FileNotFoundError:
             print(f"文件未找到：{file_path}")
