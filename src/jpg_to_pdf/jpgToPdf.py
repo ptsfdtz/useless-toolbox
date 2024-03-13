@@ -4,7 +4,6 @@ from PyQt5.QtGui import QPixmap
 from PIL import Image
 from reportlab.pdfgen import canvas
 import os
-import app
 
 class ImageToPDFConverter(QWidget): 
     def __init__(self):

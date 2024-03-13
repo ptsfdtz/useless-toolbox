@@ -8,7 +8,6 @@ import smtplib
 import openpyxl
 from PyQt5.QtWidgets import QDesktopWidget
 
-
 class EmailSenderApp(QWidget):
     def __init__(self):
         super().__init__()
