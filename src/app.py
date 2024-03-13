@@ -78,7 +78,6 @@ if __name__ == '__main__':
         Module("随机抽签", drawing.main),
         Module("发送邮件", sendMessage.main),
         Module("签到", signIn.main),
-        # Add more modules in the future
     ]
 
     toolbox = ToolBox("欢迎来到秃子的工具箱", modules)

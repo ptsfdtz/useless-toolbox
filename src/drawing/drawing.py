@@ -9,11 +9,11 @@ class DrawingApp(QWidget):
     def __init__(self, app):
         super().__init__()
 
-        self.app = app  # Store the reference to the QApplication instance
+        self.app = app  
 
         self.setWindowTitle("抽签程序")
-        self.setGeometry(0, 0, 800, 400)  # Set dimensions to 800x400
-        self.center_on_screen()  # Center the window on the screen
+        self.setGeometry(0, 0, 800, 400) 
+        self.center_on_screen()  
         self.setStyleSheet("background-color: #f0f0f0;")
 
         self.label = QLabel("点击按钮选择文件", self)
@@ -87,7 +87,7 @@ class DrawingApp(QWidget):
 
 def main():
     app = QApplication(sys.argv)
-    window = DrawingApp(app)  # Pass the QApplication instance to DrawingApp
+    window = DrawingApp(app)
     window.show()
     sys.exit(app.exec_())
 
