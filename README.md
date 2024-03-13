@@ -4,14 +4,14 @@
 
 ## download
 
-发行版本:[下载](https://github.com/ptsfdtz/useful-toolbox/releases/download/0.1.0/Toolbox-0.1.0-x86_64-pc-windows.zip)
+发行版本:[下载](https://github.com/ptsfdtz/useful-toolbox/releases/download/0.1.3/Toolbox-0.1.3-x86_64-pc-windows.zip)
 源码:[下载](https://github.com/ptsfdtz/useful-toolbox/archive/refs/tags/0.0.4.zip)
 
 ## description
 
 ### 1. 发行版
 
-如果你只是想使用这个工具箱的话，可以去下载发行版本：[下载链接](https://github.com/ptsfdtz/useful-toolbox/archive/refs/tags/0.0.4.zip)
+如果你只是想使用这个工具箱的话，可以去下载发行版本：[下载链接](https://github.com/ptsfdtz/useful-toolbox/releases/download/0.1.3/Toolbox-0.1.3-x86_64-pc-windows.zip)
 
 下载完成后解压，会看到![1709771126585](image/README/1709771126585.png)
 
