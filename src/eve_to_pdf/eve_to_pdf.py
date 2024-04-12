@@ -28,13 +28,12 @@ def convert_excel_to_pdf(input_folder, output_folder):
             workbook = openpyxl.load_workbook(input_file)
             sheets = workbook.sheetnames
 
-            # Create a PDF file for each sheet in the workbook
             for sheet_name in sheets:
                 ws = workbook[sheet_name]
                 ws.title = sheet_name
                 pdf_file = output_file[:-4] + "_" + sheet_name + ".pdf"
-                ws.sheet_view.showGridLines = False  # Hide gridlines in the PDF
-                ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE  # Landscape orientation
+                ws.sheet_view.showGridLines = False  
+                ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE  
                 ws.page_setup.fitToHeight = False
                 ws.page_setup.fitToWidth = True
                 ws.page_margins.left = 0.2
