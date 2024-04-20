@@ -39,7 +39,7 @@ class ToolBoxUI:
         col = 0
 
         for idx, module_info in enumerate(self.modules, start=1):
-            button = ttk.Button(frame, text=f"{idx}. {module_info.name}", command=lambda mod=module_info: self.run_module(mod), style='Toolbutton.TButton', width=20)
+            button = ttk.Button(frame, text=f"{idx}. {module_info.name}", command=lambda mod=module_info: self.run_module(mod), style='Toolbutton.TButton', width=15)
             button.grid(row=row, column=col, padx=10, pady=10)
 
             col += 1
@@ -57,15 +57,15 @@ class ToolBox:
     def __init__(self, title, modules):
         self.root = tk.Tk()
         self.root.title(title)
-        self.root.geometry("800x400")
+        self.root.geometry("600x300")
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        x_position = int((screen_width - 800) / 2)
-        y_position = int((screen_height - 400) / 2)
+        x_position = int((screen_width - 600) / 2)
+        y_position = int((screen_height - 300) / 2)
 
-        self.root.geometry(f"800x400+{x_position}+{y_position}")
+        self.root.geometry(f"600x300+{x_position}+{y_position}")
 
         self.ui = ToolBoxUI(self.root, modules)
 

@@ -12,19 +12,19 @@ class DrawingApp(QWidget):
         self.app = app  
 
         self.setWindowTitle("抽签程序")
-        self.setGeometry(0, 0, 800, 400) 
+        self.setGeometry(0, 0, 500, 300) 
         self.center_on_screen()  
         self.setStyleSheet("background-color: #f0f0f0;")
 
         self.label = QLabel("点击按钮选择文件", self)
-        self.label.setGeometry(20, 20, 760, 40)
+        self.label.setGeometry(20, 20, 400, 40)
 
-        self.choose_file_button = QPushButton("选择文件", self)
-        self.choose_file_button.setGeometry(20, 80, 760, 40)
+        self.choose_file_button = QPushButton("选择名单", self)
+        self.choose_file_button.setGeometry(20, 80, 400, 40)
         self.choose_file_button.clicked.connect(self.choose_file)
 
         self.draw_button = QPushButton("抽签", self)
-        self.draw_button.setGeometry(20, 140, 760, 40)
+        self.draw_button.setGeometry(20, 140, 400, 40)
         self.draw_button.setEnabled(False)
         self.draw_button.clicked.connect(self.draw)
 
