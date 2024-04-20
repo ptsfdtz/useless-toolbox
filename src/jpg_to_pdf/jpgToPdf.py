@@ -14,8 +14,7 @@ class ImageToPDFConverter(QWidget):
         self.progress_bar = QProgressBar()
         self.pdf_path_label = QLabel()
 
-        self.worker = None  # Initialize worker instance
-
+        self.worker = None  
         self.init_ui()
 
     def init_ui(self):
@@ -61,7 +60,7 @@ class ImageToPDFConverter(QWidget):
 
     @pyqtSlot(str)
     def show_message(self, message):
-        self.message_label.setStyleSheet("")  # Reset to default
+        self.message_label.setStyleSheet("") 
         self.message_label.setText(message)
         self.message_label.repaint()
 
@@ -78,14 +77,7 @@ class ImageToPDFConverter(QWidget):
     @pyqtSlot(int)
     def update_progress_bar(self, value):
         self.progress_bar.setValue(value)
-        QCoreApplication.processEvents()  # Allow the GUI to update
-
-    # @pyqtSlot()
-    # def return_to_original(self):
-    #     # 在这里执行返回时的操作
-    #     self.close()
-    #     # 返回原来的界面
-    #     app.main()
+        QCoreApplication.processEvents()  
 
 class ImageToPDFWorker(QThread):
     finished = pyqtSignal(str)
