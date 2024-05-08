@@ -1,11 +1,10 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QFileDialog, QProgressBar
-from PyQt5.QtCore import Qt, pyqtSlot, QThread, pyqtSignal, QTimer, QCoreApplication
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import pyqtSlot, QThread, pyqtSignal, QCoreApplication
 from PIL import Image
 from reportlab.pdfgen import canvas
 import os
 
-class ImageToPDFConverter(QWidget): 
+class ImageToPDFConverter(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -14,8 +13,7 @@ class ImageToPDFConverter(QWidget):
         self.progress_bar = QProgressBar()
         self.pdf_path_label = QLabel()
 
-        self.worker = None  # Initialize worker instance
-
+        self.worker = None
         self.init_ui()
 
     def init_ui(self):
@@ -25,19 +23,31 @@ class ImageToPDFConverter(QWidget):
         layout.addWidget(self.folder_path)
 
         browse_button = QPushButton("浏览", clicked=self.browse)
+        browse_button.setFixedSize(480, 50)
         layout.addWidget(browse_button)
 
         convert_button = QPushButton("一键转换", clicked=self.convert_to_pdf)
+        convert_button.setFixedSize(480, 50)
         layout.addWidget(convert_button)
 
+        layout.addWidget(QLabel("转换进度:"))
         layout.addWidget(self.progress_bar)
         layout.addWidget(self.pdf_path_label)
         layout.addWidget(self.message_label)
 
+        window_width = 2900
+        window_height = 600
+        button_width = browse_button.sizeHint().width()
+        button_height = browse_button.sizeHint().height()
+
         self.setLayout(layout)
         self.setWindowTitle("Image to PDF Converter")
-        self.setGeometry(100, 100, 520, 260) # 设置窗口大小
-
+        self.setGeometry(
+            (window_width - button_width) // 2,
+            (window_height - button_height) // 2,
+            button_width,
+            button_height,
+        )
     @pyqtSlot()
     def browse(self):
         folder_selected = QFileDialog.getExistingDirectory(self, "选择文件夹")
@@ -48,7 +58,7 @@ class ImageToPDFConverter(QWidget):
         folder_path = self.folder_path.text()
 
         if not folder_path:
-            self.show_message("未选择文件夹。退出。")
+            self.show_message("未选择文件夹，退出。")
             return
 
         output_pdf_path = "output"
@@ -61,7 +71,7 @@ class ImageToPDFConverter(QWidget):
 
     @pyqtSlot(str)
     def show_message(self, message):
-        self.message_label.setStyleSheet("")  # Reset to default
+        self.message_label.setStyleSheet("")
         self.message_label.setText(message)
         self.message_label.repaint()
 
@@ -78,14 +88,7 @@ class ImageToPDFConverter(QWidget):
     @pyqtSlot(int)
     def update_progress_bar(self, value):
         self.progress_bar.setValue(value)
-        QCoreApplication.processEvents()  # Allow the GUI to update
-
-    # @pyqtSlot()
-    # def return_to_original(self):
-    #     # 在这里执行返回时的操作
-    #     self.close()
-    #     # 返回原来的界面
-    #     app.main()
+        QCoreApplication.processEvents()
 
 class ImageToPDFWorker(QThread):
     finished = pyqtSignal(str)
