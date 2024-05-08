@@ -1,5 +1,0 @@
-tk
-reportlab
-Pillow
-PyQt5
-openpyxl
