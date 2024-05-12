@@ -13,19 +13,19 @@ class PhotoOrganizer(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('Photo Organizer')
+        self.setWindowTitle('图片分类')
         self.setGeometry(100, 100, 400, 200)
 
-        self.btn_select_input_folder = QPushButton('Select Input Folder', self)
+        self.btn_select_input_folder = QPushButton('选择输入文件夹', self)
         self.btn_select_input_folder.clicked.connect(self.selectInputFolder)
 
-        self.btn_select_output_folder = QPushButton('Select Output Folder', self)
+        self.btn_select_output_folder = QPushButton('选择输出文件夹', self)
         self.btn_select_output_folder.clicked.connect(self.selectOutputFolder)
 
-        self.btn_start = QPushButton('Start', self)
+        self.btn_start = QPushButton('开始', self)
         self.btn_start.clicked.connect(self.organizePhotos)
 
-        self.progress_label = QLabel('Progress:', self)
+        self.progress_label = QLabel('进度:', self)
         self.progress_bar = QProgressBar(self)
 
         layout = QVBoxLayout()
@@ -87,9 +87,11 @@ class PhotoOrganizer(QWidget):
 
     def updateProgress(self, value):
         self.progress_bar.setValue(value)
-
-if __name__ == '__main__':
+def main():
     app = QApplication(sys.argv)
-    window = PhotoOrganizer()
-    window.show()
+    photo_organizer = PhotoOrganizer()
+    photo_organizer.show()
     sys.exit(app.exec_())
+    
+if __name__ == '__main__':
+    main()

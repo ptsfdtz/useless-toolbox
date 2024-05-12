@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
-from jpg_to_pdf import jpgToPdf
-from drawing import drawing
-from send_message import sendMessage
-from sign_in import signIn
+import jpgToPdf
+import drawing
+import sendMessage
+import signIn
+import classification
+import eveToPdf
 import logging
 
 class Module:
@@ -34,7 +36,7 @@ class ToolBoxUI:
         self.create_buttons(frame)
 
     def create_buttons(self, frame):
-        buttons_per_row = 4  #定义每一行显示几个按钮
+        buttons_per_row = 3  #定义每一行显示几个按钮
         row = 0
         col = 0
 
@@ -78,6 +80,9 @@ if __name__ == '__main__':
         Module("随机抽签", drawing.main),
         Module("发送邮件", sendMessage.main),
         Module("签到", signIn.main),
+        Module("转PDF", eveToPdf.main),
+        Module("图片分类",classification.main)
+
     ]
 
     toolbox = ToolBox("欢迎来到秃子的工具箱", modules)

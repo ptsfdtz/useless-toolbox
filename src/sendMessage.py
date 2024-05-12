@@ -58,7 +58,6 @@ class EmailSenderApp(QWidget):
         self.progress_bar.setFixedHeight(30) 
         self.progress_bar.setAlignment(Qt.AlignCenter) 
 
-        # Added this line to define self.file_entry
         self.file_entry = QLineEdit(self)
         self.file_entry.setFont(font)
 

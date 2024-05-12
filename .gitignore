@@ -5,3 +5,4 @@ jpg_to_pdf/output
 release
 logo.png
 app.spec
+src/__pycache__
