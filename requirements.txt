@@ -3,3 +3,5 @@ reportlab
 Pillow
 PyQt5
 openpyxl
+exifread
+docx2pdf
